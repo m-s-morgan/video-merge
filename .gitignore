@@ -105,6 +105,7 @@ dist
 
 # JS files
 *.js
+*.js.map
 
 # file folders
 input
