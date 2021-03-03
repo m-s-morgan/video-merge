@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.19",
+    "@ffprobe-installer/ffprobe": "^1.1.0",
     "@types/fluent-ffmpeg": "^2.1.9",
     "fluent-ffmpeg": "^2.1.2",
     "mkdirp": "^1.0.4",

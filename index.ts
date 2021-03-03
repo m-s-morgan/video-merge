@@ -1,8 +1,9 @@
 import * as ffmpeg from 'fluent-ffmpeg';
 import { promises as fsPromises } from 'fs';
-import { join } from 'path';
+import { basename, join } from 'path';
 
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffprobePath = require('@ffprobe-installer/ffprobe').path;
 const FOLDERS = {
     PREROLL: './preroll',
     INPUT: './input',
@@ -11,6 +12,7 @@ const FOLDERS = {
 };
 
 ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath);
 
 function isNull(obj: any) {
     return obj === null || typeof obj === 'undefined';
@@ -38,13 +40,19 @@ function onError(err: Error) {
     process.exitCode = 1;
 }
 
-function merge(preName: string, inputName: string) {
-    return new Promise((resolve, reject) => {
-        ffmpeg(join(FOLDERS.PREROLL, preName))
-            .input(join(FOLDERS.INPUT, inputName))
+function merge(prePath: string, inputPath: string) {
+    return new Promise<void>((resolve, reject) => {
+        const inputName = basename(inputPath);
+
+        ffmpeg(prePath)
+            .input(inputPath)
             .on('error', reject)
+            .on ('start', () => {
+                console.log(`Starting merge for ${inputName}`);
+            })
             .on('end', () => {
-                resolve(`${inputName} merged!`);
+                console.log(`${inputName} merged!`);
+                resolve();
             })
             .mergeToFile(join(FOLDERS.OUTPUT, inputName), <any>FOLDERS.TEMP);
     });
@@ -61,10 +69,11 @@ async function mergeAll() {
         let preroll: string;
 
         for (const p of prerollFiles) {
-            const stat = await fsPromises.stat(p);
+            const apPath = join(FOLDERS.PREROLL, p);
+            const stat = await fsPromises.stat(apPath);
 
             if (!stat.isDirectory()) {
-                preroll = p;
+                preroll = apPath;
                 break;
             }
         }
@@ -76,10 +85,11 @@ async function mergeAll() {
         const inputFiles = await fsPromises.readdir(FOLDERS.INPUT);
 
         for (const i of inputFiles) {
-            const stat = await fsPromises.stat(i);
+            const iPath = join(FOLDERS.INPUT, i);
+            const stat = await fsPromises.stat(iPath);
 
             if (!stat.isDirectory()) {
-                console.log(await merge(preroll, i));
+                await merge(preroll, iPath);
             }
         }
     } catch (e) {
