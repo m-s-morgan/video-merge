@@ -1,6 +1,6 @@
 import * as ffmpeg from 'fluent-ffmpeg';
 import { promises as fsPromises } from 'fs';
-import { basename, join } from 'path';
+import { join } from 'path';
 
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const FOLDERS = {
@@ -38,18 +38,15 @@ function onError(err: Error) {
     process.exitCode = 1;
 }
 
-function merge(pre: string, input: string) {
+function merge(preName: string, inputName: string) {
     return new Promise((resolve, reject) => {
-        const filename = basename(input);
-        const output = join(FOLDERS.OUTPUT, filename);
-
-        ffmpeg(pre)
-            .input(input)
+        ffmpeg(join(FOLDERS.PREROLL, preName))
+            .input(join(FOLDERS.INPUT, inputName))
             .on('error', reject)
             .on('end', () => {
-                resolve(`${filename} merged!`);
+                resolve(`${inputName} merged!`);
             })
-            .mergeToFile(output, <any>FOLDERS.TEMP);
+            .mergeToFile(join(FOLDERS.OUTPUT, inputName), <any>FOLDERS.TEMP);
     });
 }
 
