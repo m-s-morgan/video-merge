@@ -1,0 +1,27 @@
+{
+  "name": "video-merge",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.19",
+    "fluent-ffmpeg": "^2.1.2",
+    "mkdirp": "^1.0.4",
+    "typescript": "^4.2.2"
+  },
+  "scripts": {
+    "start": "npm run ts && node index.js",
+    "postinstall": "mkdirp preroll && mkdirp input && mkdirp output",
+    "ts": "tsc -p ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m-s-morgan/video-merge.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m-s-morgan/video-merge/issues"
+  },
+  "homepage": "https://github.com/m-s-morgan/video-merge#readme"
+}
