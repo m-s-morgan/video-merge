@@ -105,3 +105,9 @@ dist
 
 # JS files
 *.js
+
+# file folders
+input
+output
+preroll
+temp

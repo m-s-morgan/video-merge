@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "npm run ts && node index.js",
-    "postinstall": "mkdirp preroll && mkdirp input && mkdirp output",
+    "postinstall": "mkdirp preroll && mkdirp input && mkdirp output && mkdirp temp",
     "ts": "tsc -p ."
   },
   "repository": {
